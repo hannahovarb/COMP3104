@@ -1,5 +1,6 @@
 
 # COMP3104 – Developer Operations
 
--- Hannah Bravo
+- Hannah Bravo
+- George Brown Polytechnic
 
