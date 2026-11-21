@@ -10,7 +10,7 @@ import {
   Text,
   View,
 } from 'react-native';
-
+// One row in the user list. It only shows the name and email and tells the parent when it gets tapped.
 function UserItem({ user, onPress }) {
   return (
     <Pressable style={styles.userItem} onPress={onPress}>
@@ -21,11 +21,15 @@ function UserItem({ user, onPress }) {
 }
 
 export default function App() {
+  // All the users we get back from the API
   const [users, setUsers] = useState([]);
+  // Whichever user was tapped. null just means we're on the list screen.
   const [selectedUser, setSelectedUser] = useState(null);
+  // Start as true since we fetch the data as soon as the app opens
   const [loading, setLoading] = useState(true);
+  // Holds an error message if the fetch fails
   const [error, setError] = useState(null);
-
+  // Runs once when the app first loads to grab the users
   useEffect(() => {
     const loadUsers = async () => {
       try {
@@ -35,7 +39,7 @@ export default function App() {
         const response = await fetch(
           'https://jsonplaceholder.typicode.com/users'
         );
-
+        // fetch doesn't throw on a bad status like 404 or 500, so we have to check it ourselve
         if (!response.ok) {
           throw new Error(`HTTP error: ${response.status}`);
         }
@@ -43,6 +47,7 @@ export default function App() {
         const data = await response.json();
         setUsers(data);
       } catch (err) {
+        // Keep the message simple, the user doesn't need the technical details
         setError('Unable to load users.');
       } finally {
         setLoading(false);
@@ -60,7 +65,7 @@ export default function App() {
       </View>
     );
   }
-
+  // Something went wrong, so show the error instead of an empty screen
   if (error) {
     return (
       <View style={styles.centered}>
@@ -68,13 +73,14 @@ export default function App() {
       </View>
     );
   }
-
+  // No user picked yet, so show the full list
   if (selectedUser === null) {
     return (
       <SafeAreaView style={styles.container}>
         <Text style={styles.title}>Users</Text>
         <FlatList
           data={users}
+          // FlatList wants string keys, and the API gives us numeric ids
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <UserItem
@@ -86,7 +92,8 @@ export default function App() {
       </SafeAreaView>
     );
   }
-
+  // A user is selected, so show all of their details.
+  // ScrollView is used here because there's a lot to fit on one screen.
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.details}>
@@ -147,7 +154,7 @@ export default function App() {
     </SafeAreaView>
   );
 }
-
+// All the styling lives down here to keep the component code easier to read
 const styles = StyleSheet.create({
   container: {
     flex: 1,
